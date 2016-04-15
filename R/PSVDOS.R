@@ -1,6 +1,6 @@
 #' Poisson SVD with Offset estimation
-#' @param Y:	data matrix
-#' @param B:  the first K columns of the U from SVD(log(Y/T))
+#' @param Y:	data matrix, n-by-m matrix.
+#' @param B:  the first K columns of the U from SVD(log(Y/T)), n
 #' @param F:  the first K columns of the SV from SVD(log(Y/T))
 #' @param K:  # of SVD components
 #' @param  niter:  	# of maximum iterations for poissonSVD
@@ -8,11 +8,16 @@
 #' @param  ln:    	link functions, "log", "sqrt", "identity"
 #' @param  verbose: 	Log information
 #' @return Returns PSVD results
-#' 	a <- PSVDOS(Y,K=2)
-#'
+#' @return B: Estimated
+#' @examples
+#' data(demo)
+#' heatmap(Y)
+#' psvdfit = PSVDOS(Y,K=4,verbose=1,err = 0.0001,niter = 300)
+#' names(psvdfit)
 #' @references
 #' [1] Lee, S., Chugh, P. E., Shen, H., Eberle, R., & Dittmer, D. P. (2013) Poisson factor models with applications to non-normalized microRNA profiling. Bioinformatics, 29(9), 1105-1111
-
+#' @export
+#'
 PSVDOS <- function(Y,K=NULL, B = NULL, F = NULL, E = NULL,
 		niter = 100, err = 0.0001,ln="log",verbose = 0,const=1,zerocount=exp(-3),
 		rowoffset = NULL,colcenter=0,...)
@@ -31,11 +36,11 @@ PSVDOS <- function(Y,K=NULL, B = NULL, F = NULL, E = NULL,
 		if(is.null(rowoffset)){## the initial values of row offset value needs to be estimated.
 
 			if(is.null(B)){
-				B = matrix(temp$u[,1:K], nrow=n)
+				B = matrix(temp$u[,1:K], nrow=n)%*%diag(temp$d[1:K], nrow=K)
 			}
 			if(is.null(F)){
 				tmpv = scale(temp$v[,1:K],scale=FALSE)
-				F =tmpv%*%diag(temp$d[1:K], nrow=K)
+				F =tmpv
 			}
 #			if(is.null(rowoffset)){
 			rowoffset = rep(0,n)
@@ -59,15 +64,13 @@ PSVDOS <- function(Y,K=NULL, B = NULL, F = NULL, E = NULL,
 		offtemp = matrix(rep(log(rowoffset),m),n,m)# + t(matrix(rep(log(coloffset),n),m,n))
 		tmp = log(Ytmp)-offtemp
 		temp = svd(tmp)
-		B = matrix(temp$u[, 1:K], nrow=n)
+		B = matrix(temp$u[, 1:K], nrow=n)%*%diag(temp$d[1:K], nrow=K)
 		tmpv = matrix(scale(temp$v[,1:K],scale=FALSE, center=TRUE),m,K)
-		F =tmpv%*%diag(temp$d[1:K], nrow=K)
-		if(is.null(E)){
-			E =tmpv
-		}
+		F =tmpv
+
 	}
 
-  	Bp = B;Fp = F;Ep = E;BF.d = 1;iter = 0;
+  	Bp = B;Fp = F;BF.d = 1;iter = 0;
 	if (verbose==1) {print(paste("K = ",K, sep=""))}
 
 	while(BF.d > err){
@@ -95,15 +98,13 @@ PSVDOS <- function(Y,K=NULL, B = NULL, F = NULL, E = NULL,
 		}
 		tp = Bp%*%t(Fp)
     		temp <- svd(tp-matrix(rep(apply(tp,1,mean),m),n,m))
-		Bp <- matrix(temp$u[,1:K],nrow=n)
+		Bp <- matrix(temp$u[,1:K],nrow=n)%*%diag(temp$d[1:K], nrow=K)
 		Dp = temp$d
-		Ep =  matrix(temp$v[,1:K], nrow=m)
 		tmpv = matrix(scale(temp$v[,1:K],scale=FALSE),m,K)
-		Fp =tmpv%*%diag(temp$d[1:K], nrow=K)
-    		BF.d <- max(sqrt(sum((B-Bp)^2)), sqrt(sum((E-Ep)^2)))# sqrt(sum((F-Fp)^2)))
+		Fp =tmpv
+    		BF.d <- max(sqrt(sum((B-Bp)^2)), sqrt(sum((F-Fp)^2)))
     		B <- Bp
     		F <- Fp
-		E = Ep
 
     		if(iter > niter) {
       			print("Fail to converge! Increase the niter!")
@@ -118,6 +119,6 @@ PSVDOS <- function(Y,K=NULL, B = NULL, F = NULL, E = NULL,
   	}
 
   	cat(iter, "\n")
-  	return(list(B=B, F=F, E=E, D = Dp,iter=iter, BF.d=BF.d, deviance=dev, rowoffset = rowoffset, mu=mu))
+  	return(list(B=B, F=F, D = Dp,iter=iter, BF.d=BF.d, deviance=dev, rowoffset = rowoffset, mu=mu))
 }
 

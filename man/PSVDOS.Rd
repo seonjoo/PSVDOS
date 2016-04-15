@@ -9,9 +9,9 @@ PSVDOS(Y, K = NULL, B = NULL, F = NULL, E = NULL, niter = 100,
   zerocount = exp(-3), rowoffset = NULL, colcenter = 0, ...)
 }
 \arguments{
-\item{Y:}{data matrix}
+\item{Y:}{data matrix, n-by-m matrix.}
 
-\item{B:}{the first K columns of the U from SVD(log(Y/T))}
+\item{B:}{the first K columns of the U from SVD(log(Y/T)), n}
 
 \item{F:}{the first K columns of the SV from SVD(log(Y/T))}
 
@@ -27,10 +27,17 @@ PSVDOS(Y, K = NULL, B = NULL, F = NULL, E = NULL, niter = 100,
 }
 \value{
 Returns PSVD results
-	a <- PSVDOS(Y,K=2)
+
+B: Estimated
 }
 \description{
 Poisson SVD with Offset estimation
+}
+\examples{
+data(demo)
+heatmap(Y)
+psvdfit = PSVDOS(Y,K=4,verbose=1,err = 0.0001,niter = 300)
+names(psvdfit)
 }
 \references{
 [1] Lee, S., Chugh, P. E., Shen, H., Eberle, R., & Dittmer, D. P. (2013) Poisson factor models with applications to non-normalized microRNA profiling. Bioinformatics, 29(9), 1105-1111
