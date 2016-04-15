@@ -1,0 +1,10 @@
+Package: PSVDOS
+Type: Package
+Title: Conduct poisson singular value decomposition with offset estimation
+Version: 0.1.0
+Author: Seonjoo Lee
+Maintainer: Seonjoo Lee <seonjool@gmail.com>
+Description: Poisson Singular Valude Decomposition with Offset Estimation
+License: GPL-2
+LazyData: TRUE
+RoxygenNote: 5.0.1
