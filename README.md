@@ -1,6 +1,12 @@
 # PSVDOS
 
 ## CRAN
+To install from github:
+```{r}
+library(devtools)
+install_github("seonjoo/PSVDOS")
+library(PSVDOS)
+```
 
 To install the most recent package from CRAN type:
 ```{r}
