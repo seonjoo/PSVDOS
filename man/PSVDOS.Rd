@@ -4,8 +4,8 @@
 \alias{PSVDOS}
 \title{Poisson SVD with Offset estimation}
 \usage{
-PSVDOS(Y, K = NULL, B = NULL, F = NULL, E = NULL, niter = 100,
-  err = 1e-04, ln = "log", verbose = 0, const = 1,
+PSVDOS(Y = NULL, K = NULL, B = NULL, F = NULL, E = NULL,
+  niter = 100, err = 1e-04, ln = "log", verbose = 0, const = 1,
   zerocount = exp(-3), rowoffset = NULL, colcenter = 0, ...)
 }
 \arguments{

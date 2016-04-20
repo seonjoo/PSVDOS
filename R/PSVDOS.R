@@ -18,11 +18,11 @@
 #' [1] Lee, S., Chugh, P. E., Shen, H., Eberle, R., & Dittmer, D. P. (2013) Poisson factor models with applications to non-normalized microRNA profiling. Bioinformatics, 29(9), 1105-1111
 #' @export
 #'
-PSVDOS <- function(Y,K=NULL, B = NULL, F = NULL, E = NULL,
+PSVDOS <- function(Y=NULL,K=NULL, B = NULL, F = NULL, E = NULL,
 		niter = 100, err = 0.0001,ln="log",verbose = 0,const=1,zerocount=exp(-3),
 		rowoffset = NULL,colcenter=0,...)
 {#, coloffset=NULL,...){
-
+  if (is.null(Y)){print('Y matrix is missing. Please specify.');stop();}
 	n = dim(Y)[1]
 	m = dim(Y)[2]
 	rowoffsetupdate = 0 #No update for offset
