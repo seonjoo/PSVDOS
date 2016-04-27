@@ -7,6 +7,12 @@ To install the most recent package from CRAN type:
 install.packages("PSVDOS")
 library(PSVDOS)
 ```
+## From github:
+```{r}
+library(devtools)
+install_github("seonjoo/PSVDOS")
+library(PSVDOS)
+```
 
 ## Usage
 The PSVDOS function conducts Poisson singular value decomposition with offset estimation. 
